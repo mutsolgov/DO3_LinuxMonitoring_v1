@@ -72,3 +72,40 @@ mask=$(ip -o -f inet addr show scope global | awk -v ip="$IP_RAW" '
 ')
 [[ -z $mask ]] && MASK=$MASK_RAW || MASK=$mask
 
+
+GATEWAY=$(get_gateway)
+
+read RAM_TOTAL RAM_USED RAM_FREE _ < <(get_ram)
+
+read SPACE_ROOT SPACE_ROOT_USED SPACE_ROOT_FREE < <(get_root_space)
+
+# Выводим в формате "KEY = VALUE":
+print_colored_line "HOSTNAME" "$HOSTNAME"
+print_colored_line "TIMEZONE" "$TIMEZONE"
+print_colored_line "USER" "$USER"
+print_colored_line "OS" "$OS"
+print_colored_line "DATE" "$DATE"
+print_colored_line "UPTIME" "$UPTIME"
+print_colored_line "UPTIME_SEC" "$UPTIME_SEC"
+print_colored_line "IP" "$IP"
+print_colored_line "MASK" "$MASK"
+print_colored_line "GATEWAY" "$GATEWAY"
+print_colored_line "RAM_TOTAL" "${RAM_TOTAL} GB"
+print_colored_line "RAM_USED" "${RAM_USED} GB"
+print_colored_line "RAM_FREE" "${RAM_FREE} GB"
+print_colored_line "SPACE_ROOT" "${SPACE_ROOT} MB"
+print_colored_line "SPACE_ROOT_USED" "${SPACE_ROOT_USED} MB"
+print_colored_line "SPACE_ROOT_FREE" "${SPACE_ROOT_FREE} MB"
+
+color_names=("" "white" "red" "green" "blue" "purple" "black")
+
+name_or_default() {
+    local val="$1"
+    local def="$2"
+    [[ -z "$val" ]] && echo "default (${color_names[$def]})" || echo "$val (${color_names[$val]})"
+}
+
+echo "Column 1 background = $(name_or_default "$column1_background" "$DEFAULT_COL1_BG")"
+echo "Column 1 font color = $(name_or_default "$column1_font_color" "$DEFAULT_COL1_FG")"
+echo "Column 2 background = $(name_or_default "$column2_background" "$DEFAULT_COL2_BG")"
+echo "Column 2 font color = $(name_or_default "$column2_font_color" "$DEFAULT_COL2_FG")"
