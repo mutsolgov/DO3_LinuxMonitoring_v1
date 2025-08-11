@@ -50,3 +50,19 @@ get_top_files() {
         done
 }
 
+# 6) Топ-N исполняемых файлов с MD5: "path,size,md5"
+get_top_exe_files() {
+    local dir=$1 count=$2
+    find "$dir" -type f -executable -printf "%s %p\n" \
+        | sort -nrk1,1 \
+        | head -n"$count" \
+        | while read -r size path; do
+            hash=$(md5sum "$path" | awk '{print $1}')
+            echo "$path,$size,$hash"
+        done
+}
+
+# 7) Человека-читаемый формат размера
+to_human() {
+    numfmt --to=iec --suffix=B "$1"
+}
