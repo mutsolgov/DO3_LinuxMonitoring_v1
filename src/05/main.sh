@@ -57,3 +57,23 @@ echo "Log files (with the extension .log) = $log_files"
 echo "Archive files = $arch_files"
 echo "Symbolic links = $links"
 
+echo "TOP 10 files of maximum size arranged in descending order (path, size and type):"
+i=1
+while IFS=',' read -r path size ext; do
+    echo "$i - $path, $(to_human "$size"), $ext"
+    ((i++))
+done <<<"$top10_files"
+echo "etc up to 10"
+
+echo "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):"
+i=1
+while IFS=',' read -r path size hash; do
+    [[ -z "$path" ]] && continue
+    echo "$i - $path, $(to_human "$size"), $hash"
+    ((i++))
+done <<<"$top10_exe"
+echo "etc up to 10"
+(( i > 1)) || echo "Ничего не найдено"
+
+
+echo "Script execution time (in seconds) = $elapsed"
