@@ -55,3 +55,40 @@ DATE=$(get_date)
 UPTIME=$(get_uptime)
 UPTIME_SEC=$(get_uptime_sec)
 
+read IP_RAW MASK_RAW < <(get_ip_and_mask)
+IP=$IP_RAW
+
+# берём маску префикса из /proc/net/fib_trie
+mask=$(ip -o -f inet addr show scope global | awk -v ip="$IP_RAW" '
+  $4 ~ ip"/" { split($4, a, "/"); prefix=a[2];
+    for(i=1; i<=4; i++) oct[i] = and(255, rshift(0xFFFFFFFF, (i-1)*8 + (32-prefix)));
+    printf "%d.%d.%d.%d\n", oct[1],oct[2],oct[3],oct[4];
+    exit }
+')
+[[ -z $mask ]] && MASK=$MASK_RAW || MASK=$mask
+
+
+GATEWAY=$(get_gateway)
+
+read RAM_TOTAL RAM_USED RAM_FREE _ < <(get_ram)
+
+read SPACE_ROOT SPACE_ROOT_USED SPACE_ROOT_FREE < <(get_root_space)
+
+# Выводим в формате "KEY = VALUE":
+# cat <<EOF
+print_colored_line "HOSTNAME" "$HOSTNAME"
+print_colored_line "TIMEZONE" "$TIMEZONE"
+print_colored_line "USER" "$USER"
+print_colored_line "OS" "$OS"
+print_colored_line "DATE" "$DATE"
+print_colored_line "UPTIME" "$UPTIME"
+print_colored_line "UPTIME_SEC" "$UPTIME_SEC"
+print_colored_line "IP" "$IP"
+print_colored_line "MASK" "$MASK"
+print_colored_line "GATEWAY" "$GATEWAY"
+print_colored_line "RAM_TOTAL" "${RAM_TOTAL} GB"
+print_colored_line "RAM_USED" "${RAM_USED} GB"
+print_colored_line "RAM_FREE" "${RAM_FREE} GB"
+print_colored_line "SPACE_ROOT" "${SPACE_ROOT} MB"
+print_colored_line "SPACE_ROOT_USED" "${SPACE_ROOT_USED} MB"
+print_colored_line "SPACE_ROOT_FREE" "${SPACE_ROOT_FREE} MB"
