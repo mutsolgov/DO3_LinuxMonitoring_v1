@@ -12,7 +12,7 @@ DEFAULT_COL2_BG=3
 DEFAULT_COL2_FG=4
 
 # Загружаем конфиг, если он есть
-CONFIG_FILE="config.conf"
+CONFIG_FILE="$(dirname "$0")/config.conf"
 [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 
 # Присваиваем значения, с дефолтоми
