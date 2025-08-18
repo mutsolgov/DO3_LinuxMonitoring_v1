@@ -91,3 +91,58 @@ README.md
 
 ### Пример запуска:
 ![Screenshot part3](./materials/screenshots/Task_3.png)
+
+## Part 4 — Конфигурация цветовой схемы (src/04/main.sh, config.conf)
+
+### Что делает: то же, что и Part 3, но параметры цвета читаются не из CLI, а из config.conf. Если параметр отсутствует — используется схема по умолчанию (значения переменных DEFAULT_COL*).
+
+### Формат config.conf:
+``` text
+column1_background=2
+column1_font_color=4
+column2_background=5
+column2_font_color=1
+```
+
+### Поведение:
+
+- > #### Скрипт ищет файл config.conf.
+
+- > #### Если файла нет(переменная не задана), берём дефолт. Переменные подставляются с помощью ${column1_background:-$DEFAULT_COL1_BG} 
+
+> #### Скрипт также проверяет, что значения конфигурации лежат в диапазоне 1..6 и что для каждой колонки фон ≠ цвет шрифта. Если проверка не проходит — ошибка.
+
+### После вывода системы скрипт печатает схему цветов в читабельном виде:
+
+> - Column 1 background = 2 (red)
+> - Column 1 font color = 4 (blue)
+> - Column 2 background = 5 (purple)
+> - Column 2 font color = 1 (white)
+
+<br>![Screenshot part4](./materials/screenshots/Task_4.png)
+
+
+
+### Если используется значение по умолчанию — выводит default (color_name).
+
+![Screenshot part4](./materials/screenshots/Task_4-2.png)
+
+## Part 5 — Исследование файловой системы (src/05/main.sh)
+
+> Что делает: анализ заданной директории (через параметр — обязательно заканчивается /), выводит:
+<br>Total number of folders (including all nested ones) — общее число директорий (включая корень).
+<br>TOP 5 folders... — топ5 директорий по размеру (путь, размер — человекочитаемый).
+<br>Total number of files
+<br>Number of: — по категориям:
+<br>Configuration files (*.conf)
+<br>Text files (подсчёт текстовых файлов)
+<br>Executable files (исполняемые файлы)
+<br>Log files (*.log) (логи)
+<br>Archive files (*.zip, .gz, .bz2, .7z) (архивы)
+<br>Symbolic links (ссылки)
+<br>TOP 10 files of maximum size — (путь, размер, расширение)
+<br>TOP 10 executable files... — (путь, размер, MD5)
+<br>Script execution time (in seconds) = X (время выполнения)
+
+### Пример запуска:
+![Screenshot part5_topdirs](./materials/screenshots/Task_5.png)
